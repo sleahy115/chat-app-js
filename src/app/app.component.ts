@@ -9,17 +9,18 @@ import { Router } from "@angular/router";
   providers: [AF]
 })
 export class AppComponent {
-  title = 'app works!';
+
   public isLoggedIn:boolean;
   constructor(private router:Router, public afService:AF) {
     this.afService.af.auth.subscribe(
       (auth)=> {
         if(auth === null) {
-          console.log(auth);
           this.router.navigate(['login']);
           this.isLoggedIn = false;
         } else {
-          console.log(auth)
+          this.afService.displayName = auth.google.displayName;
+          console.log(this.afService.displayName);
+          this.afService.email = auth.google.email;
           this.isLoggedIn = true;
           this.router.navigate(['']);
         }
