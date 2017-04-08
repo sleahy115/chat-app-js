@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import {AF} from "./../providers/af";
 import {FirebaseListObservable} from "angularfire2";
 
@@ -8,7 +8,19 @@ import {FirebaseListObservable} from "angularfire2";
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css'],
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent implements OnInit, AfterViewChecked {
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch(err) {console.log("scroll to bottom failed")}
+  }
+  
   public newMessage:string;
   public messages:FirebaseListObservable<any>;
 
@@ -33,7 +45,6 @@ export class HomePageComponent implements OnInit {
   }
 
   sendMessage() {
-    console.log(this.messages);
     this.afService.sendMessage(this.newMessage);
     this.newMessage = '';
   }
